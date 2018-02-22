@@ -114,5 +114,12 @@ namespace NeteaseMusicAPI.Tests
                     "{\"rid\":\"A_PL_0_740840138\",\"offset\":\"0\",\"total\":\"true\",\"limit\":\"20\",\"csrf_token\":\"\"}");
             Assert.IsTrue(result?.IndexOf("isMusician") != -1);
         }
+
+        [TestMethod]
+        public void GetPlaylistTest()
+        {
+            NeteaseMusicAPI api = new NeteaseMusicAPI();
+            var result = api.GetPlaylist(375540586);
+        }
     }
 }

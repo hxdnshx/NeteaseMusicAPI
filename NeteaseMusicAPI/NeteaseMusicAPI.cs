@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace NeteaseMusicAPI
 {
@@ -84,5 +86,30 @@ namespace NeteaseMusicAPI
         }
 
 
+        /// <summary>
+        /// {
+        /// "id": playlist_id,
+        /// "offset": 0,
+        /// "total": True,
+        /// "limit": 1000,
+        /// "n": 1000,
+        /// "csrf_token": csrf
+        /// }
+    /// </summary>
+    /// <param name="playlistid"></param>
+    /// <returns></returns>
+    public JObject GetPlaylist(int playlistid)
+        {
+            JObject obj = new JObject
+            {
+                {"id", playlistid},
+                {"offset", 0},
+                {"total", true},
+                {"limit", "1000"},
+                {"n", 1000}
+            };
+            var result = SendData("http://music.163.com/weapi/v3/playlist/detail?csrf_token=", obj.ToString());
+            return JObject.Parse(result);
+        }
     }
 }
