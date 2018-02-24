@@ -95,21 +95,114 @@ namespace NeteaseMusicAPI
         /// "n": 1000,
         /// "csrf_token": csrf
         /// }
-    /// </summary>
-    /// <param name="playlistid"></param>
-    /// <returns></returns>
-    public JObject GetPlaylist(int playlistid)
+        /// </summary>
+        /// <param name="playlistid"></param>
+        /// <returns></returns>
+        public JObject GetPlaylistDetail(int playlistid, int offset = 0,bool isTotal = true, int limit = 1000, int n = 1000)
         {
             JObject obj = new JObject
             {
                 {"id", playlistid},
-                {"offset", 0},
-                {"total", true},
-                {"limit", "1000"},
-                {"n", 1000}
+                {"offset", offset},
+                {"total", isTotal},
+                {"limit", limit.ToString()},
+                {"n", n},
+                {"csrf_token", ""}
             };
             var result = SendData("http://music.163.com/weapi/v3/playlist/detail?csrf_token=", obj.ToString());
             return JObject.Parse(result);
         }
+
+        /// <summary>
+        /// {"uid":"1","wordwrap":"7","offset":"0","total":"true","limit":"36","csrf_token":""}
+        /// </summary>
+        /// <returns></returns>
+        public JObject GetUserPlaylists(int uid, int wordwarp = 7, int offset = 0, bool total = true, int limit = 36)
+        {
+            JObject obj = new JObject
+            {
+                {"uid", uid},
+                {"wordwarp", wordwarp},
+                {"offset", offset},
+                {"total", total},
+                {"limit", limit},
+                {"csrf_token", ""}
+            };
+            var result = SendData("http://music.163.com/weapi/user/playlist", obj.ToString());
+            return JObject.Parse(result);
+        }
+
+        //{"userId":"1","total":"true","limit":"20","time":"-1","getcounts":"true","csrf_token":""}
+        public JObject GetUserEvents(int uid, bool total = true, int limit = 20, int time = -1, bool getcounts = true)
+        {
+            JObject obj = new JObject
+            {
+                {"userId", uid},
+                {"total", total},
+                {"limit", limit},
+                {"time", time},
+                {"getcounts", getcounts},
+                {"csrf_token", ""}
+            };
+            var result = SendData($"http://music.163.com/weapi/event/get/{uid}", obj.ToString());
+            return JObject.Parse(result);
+        }
+
+        /// <summary>
+        /// {"uid":"1","offset":"0","total":"true","limit":"20","csrf_token":""}
+        /// </summary>
+        /// <returns></returns>
+        public JObject GetUserFollows(int uid, int offset = 0, bool total = true, int limit = 20)
+        {
+            JObject obj = new JObject
+            {
+                {"uid", uid},
+                {"offset", offset},
+                {"total", total},
+                {"limit", limit},
+                {"csrf_token", ""}
+            };
+            var result = SendData($"http://music.163.com/weapi/user/getfollows/{uid}", obj.ToString());
+            return JObject.Parse(result);
+        }
+
+        /// <summary>
+        /// {"userId":"1","offset":"0","total":"true","limit":"20","csrf_token":""}
+        /// </summary>
+        /// <returns></returns>
+        public JObject GetUserFollowers(int uid, int offset = 0, bool total = true, int limit = 20)
+        {
+            JObject obj = new JObject
+            {
+                {"userId", uid},
+                {"offset", offset},
+                {"total", total},
+                {"limit", limit},
+                {"csrf_token", ""}
+            };
+            var result = SendData("http://music.163.com/weapi/user/getfolloweds", obj.ToString());
+            return JObject.Parse(result);
+        }
+
+        /// <summary>
+        /// {"uid":"1","type":"-1","limit":"1000","offset":"0","total":"true","csrf_token":""}
+        /// Type:1 for weekly record, -1 for all record
+        /// </summary>
+        /// <returns></returns>
+        public JObject GetUserPlayRecords(int uid, int type = -1, int offset = 0, bool total = true, int limit = 1000)
+        {
+            JObject obj = new JObject
+            {
+                {"uid", uid},
+                {"type", type},
+                {"limit", limit},
+                {"offset", offset},
+                {"total", total},
+                {"csrf_token", ""}
+            };
+            var result = SendData($"http://music.163.com/weapi/v1/play/record", obj.ToString());
+            return JObject.Parse(result);
+        }
     }
+
 }
