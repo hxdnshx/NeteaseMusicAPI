@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Finnite</Authors>
+    <Product>Finnite</Product>
+    <Company>-</Company>
+    <PackageProjectUrl>https://github.com/hxdnshx/NeteaseMusicAPI</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
