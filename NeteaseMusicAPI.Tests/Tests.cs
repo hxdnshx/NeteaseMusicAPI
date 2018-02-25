@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NeteaseMusicAPI.Internal;
 
 namespace NeteaseMusicAPI.Tests
 {
@@ -15,6 +17,9 @@ namespace NeteaseMusicAPI.Tests
             "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7";
 
         private const int TestNeteaseID = 375540586;//随便选的一个测试id
+        private const int TestSongID = 476081901; //カタオモイ
+        private const int TestAlbumID = 3308845; // Bremen
+        private const int TestArtistID = 159300; // 米津玄師
 
 
         [TestMethod]
@@ -130,10 +135,25 @@ namespace NeteaseMusicAPI.Tests
         {
             NeteaseMusicAPI api = new NeteaseMusicAPI();
             var result = api.GetUserPlaylists(TestNeteaseID);
+            Assert.AreNotEqual(result, null);
             result = api.GetUserEvents(TestNeteaseID);
+            Assert.AreNotEqual(result, null);
             result = api.GetUserFollowers(TestNeteaseID);
+            Assert.AreNotEqual(result, null);
             result = api.GetUserFollows(TestNeteaseID);
+            Assert.AreNotEqual(result, null);
             result = api.GetUserPlayRecords(TestNeteaseID);
+            Assert.AreNotEqual(result, null);
+            result = api.GetAlbumComments(TestAlbumID);
+            Assert.AreNotEqual(result, null);
+        }
+
+        [TestMethod]
+        public void GetUserBriefInfoTest()
+        {
+            NeteaseMusicAPI api = new NeteaseMusicAPI();
+            var result = api.GetUserBriefInfo(TestNeteaseID);
+            Assert.AreNotEqual(result, null);
         }
     }
 }

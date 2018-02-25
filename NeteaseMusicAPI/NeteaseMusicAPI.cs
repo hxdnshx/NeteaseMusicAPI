@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
+using NeteaseMusicAPI.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -47,6 +50,19 @@ namespace NeteaseMusicAPI
         protected string HttpPost(string uri, FormUrlEncodedContent content)
         {
             var result = _client.PostAsync(uri, content).Result;
+            if (result.Content.Headers.ContentEncoding.Contains("gzip"))
+            {
+                var rawResult = result.Content.ReadAsByteArrayAsync().Result;
+                var finResult = GZipHelper.Decompress_GZip(rawResult);
+                return Encoding.UTF8.GetString(finResult);
+            }
+
+            return result.Content.ReadAsStringAsync().Result;
+        }
+
+        protected string HttpGet(string uri)
+        {
+            var result = _client.GetAsync(uri).Result;
             if (result.Content.Headers.ContentEncoding.Contains("gzip"))
             {
                 var rawResult = result.Content.ReadAsByteArrayAsync().Result;
@@ -202,6 +218,61 @@ namespace NeteaseMusicAPI
             };
             var result = SendData($"http://music.163.com/weapi/v1/play/record", obj.ToString());
             return JObject.Parse(result);
+        }
+
+        private static readonly Regex jsonfinder = new Regex("window\\.REDUX_STATE = ([^\n]+});");
+
+        public JObject GetUserBriefInfo(int uid)
+        {
+            var result = HttpGet($"http://music.163.com/user/home?id={uid}");
+            var match = jsonfinder.Match(result);
+            if (match.Success == false)
+                return null;
+            var jsontxt = match.Groups[1].Value;
+            var json = JObject.Parse(jsontxt);
+            return json["User"]["info"]["profile"] as JObject;
+        }
+
+        public JObject GetLyric(int id, int lv = -1, int tv = -1)
+        {
+            JObject obj = new JObject
+            {
+                {"id", id},
+                {"lv", lv},
+                {"tv", tv},
+                {"csrf_token", ""}
+            };
+            var result = SendData($"http://music.163.com/weapi/song/lyric", obj.ToString());
+            return JObject.Parse(result);
+        }
+
+        public JObject GetComments(string id, int offset = 0, bool total = true, int limit = 1000)
+        {
+            JObject obj = new JObject
+            {
+                {"rid", id},
+                {"offset", offset},
+                {"total", total},
+                {"limit", limit},
+                {"csrf_token", ""}
+            };
+            var result = SendData($"http://music.163.com/weapi/v1/resource/comments/{id}", obj.ToString());
+            return JObject.Parse(result);
+        }
+
+        public JObject GetSongComments(int id, int offset = 0, bool total = true, int limit = 1000)
+        {
+            return GetComments($"R_SO_4_{id}", offset, total, limit);
+        }
+
+        public JObject GetAlbumComments(int id, int offset = 0, bool total = true, int limit = 1000)
+        {
+            return GetComments($"R_AL_3_{id}", offset, total, limit);
+        }
+
+        public JObject GetPlaylistComments(int id, int offset = 0, bool total = true, int limit = 1000)
+        {
+            return GetComments($"R_AL_0_{id}", offset, total, limit);
         }
     }
 

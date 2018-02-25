@@ -5,7 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 
-namespace NeteaseMusicAPI
+namespace NeteaseMusicAPI.Internal
 {
     public class RSAHelper
     {

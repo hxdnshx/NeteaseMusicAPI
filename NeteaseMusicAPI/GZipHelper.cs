@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 
-namespace NeteaseMusicAPI
+namespace NeteaseMusicAPI.Internal
 {
     public static class GZipHelper
     {
