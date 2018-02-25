@@ -1,6 +1,11 @@
 language: csharp
 mono: none
-dotnet: 2.0
+dotnet: 2.1.4
 script:
  - dotnet restore
  - dotnet test NeteaseMusicAPI.Tests
+branches:
+  only:
+    - master
+os:
+  - linux
